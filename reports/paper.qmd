@@ -1,9 +1,7 @@
----
 title: "Project report"
 format: html
 execute:
   echo: false
----
 
 # Introduction
 
@@ -17,5 +15,12 @@ files under `data/processed/`.
 #| label: load-packages
 #| message: false
 library(dplyr)
-# Add code here to summarise your results
+library(targets)
+```
+
+```{r}
+#| label: use-targets
+# Read a target produced by the pipeline (run after tar_make)
+model_fit <- targets::tar_read(model_fit)
+model_fit
 ```

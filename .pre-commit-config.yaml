@@ -11,5 +11,16 @@ repos:
     rev: v0.3.2
     hooks:
       - id: style-files
+        stages: [manual]
       - id: lintr
+        stages: [manual]
       - id: spell-check
+        stages: [manual]
+  - repo: local
+    hooks:
+      - id: renv-snapshot
+        name: renv snapshot on DESCRIPTION change
+        entry: Rscript -e "if (requireNamespace('renv', quietly=TRUE) && file.exists('renv.lock')) renv::snapshot(prompt = FALSE)"
+        language: system
+        files: ^DESCRIPTION$
+        stages: [manual]

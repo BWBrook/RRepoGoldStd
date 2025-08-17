@@ -1,25 +1,33 @@
 ## Targets pipeline definition
 ##
-## This is the entry point for your {targets} workflow.  It sources
-## package bootstrap and global options, sets pipeline-wide defaults via
-## `tar_option_set()`, defines helper functions, and enumerates the
-## targets that constitute your DAG.  Replace the placeholders with
-## real logic as your project evolves.
+## Entry point for the {targets} workflow. This script loads the package
+## (installed or via pkgload), sets pipeline-wide defaults via
+## `tar_option_set()`, and enumerates targets in the DAG.
 
-source("R/packages.R"); lib()
-source("R/options.R")
+## Load the local package in development, or the installed version otherwise
+if (requireNamespace("pkgload", quietly = TRUE)) {
+  pkgload::load_all(export_all = FALSE, helpers = FALSE, attach_testthat = FALSE)
+} else {
+  suppressPackageStartupMessages(library(RRepoGoldStd))
+}
 
 tar_option_set(
-  packages = character(),         # packages loaded via lib()
-  format = "qs",                  # use the fast qs format for local targets
+  packages = c(
+    "dplyr","readr","purrr","tidyr","sf","terra",
+    "arrow","duckdb","config","qs","vroom","lgr","progressr"
+  ),
+  format = "qs",
   memory = "transient",
-  garbage_collection = TRUE
+  garbage_collection = TRUE,
+  error = "stop",
+  storage = "worker",
+  retrieval = "main",
+  cue = tar_cue(mode = "thorough"),
+  resources = tryCatch(
+    tar_resources(qs = tar_resources_qs(preset = "high")),
+    error = function(e) NULL
+  )
 )
-
-## Helper to read a delimited file quickly.  `vroom` streams data from
-## disk and infers column types; disable column type messages via
-## options in options.R.
-lread <- function(path) vroom::vroom(path, show_col_types = FALSE)
 
 list(
   ## Configuration: read YAML into a list.  Use config::get() to

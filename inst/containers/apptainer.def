@@ -9,8 +9,8 @@ From: rocker/r2u:jammy
 
     # Copy project files into image (handled in %files section)
 
-    # Install renv and restore project packages
-    R -q -e "install.packages('renv'); renv::restore(prompt = FALSE)"
+    # Bootstrap dependencies (restore if renv.lock exists, otherwise init + snapshot)
+    R -q -e "source('scripts/bootstrap.R')"
 
 %files
     . /project

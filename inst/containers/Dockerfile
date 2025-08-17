@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /project
 COPY . /project
 
-# Restore R packages from renv.lock (assumes renv is included in the repo)
-RUN R -q -e "install.packages('renv'); renv::restore(prompt = FALSE)"
+# Bootstrap dependencies (restore if renv.lock exists, otherwise init + snapshot)
+RUN R -q -e "source('scripts/bootstrap.R')"
 
 # Default command: run the full pipeline
 CMD ["R", "-q", "-e", "targets::tar_make()"]

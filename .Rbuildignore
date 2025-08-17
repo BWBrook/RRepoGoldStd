@@ -1,2 +1,17 @@
+^renv$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^data/.*$
+^reports/.*$
+^profiles/.*$
+^config/.*$
+^metadata/.*$
+^_targets\.R$
+^_targets/.*$
+^Makefile$
+^scripts/.*$
+^quarto\.yml$
+^\.github/.*$
+^\.env$
+^renv/.*$
+^renv\.lock$

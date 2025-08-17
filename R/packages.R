@@ -1,33 +1,26 @@
-## Package bootstrap and centralised library attaches
+## Dependency helpers (no installs here)
 ##
-## This file defines a small helper to ensure that all packages are
-## installed via pak and then loaded consistently.  Keeping package
-## installation here helps ensure reproducibility because you can track
-## package versions via `renv` and avoid installing ad hoc inside your
-## pipeline.
+## Centralise the list of core packages used by this compendium. Use
+## these helpers to attach packages interactively if needed. Installation
+## is handled via `scripts/bootstrap.R` and `renv`.
 
-if (!"pak" %in% rownames(installed.packages())) install.packages("pak")
-pkgs <- c(
-  "targets","tarchetypes","renv","arrow","duckdb","vroom","dplyr",
-  "readr","purrr","tidyr","sf","terra","yaml","config","qs",
-  "lgr","progressr","checkmate","janitor",
-  "testthat","lintr","styler","quarto","precommit"
-)
-pak::pak(pkgs, ask = FALSE)
+#' Vector of core runtime packages
+#' @keywords internal
+core_packages <- function() {
+  c(
+    "targets","tarchetypes","arrow","duckdb","vroom","dplyr",
+    "readr","purrr","tidyr","sf","terra","yaml","config","qs",
+    "lgr","progressr"
+  )
+}
 
-## Define a function `lib()` to attach packages.  Use this instead of
-## repeated library() calls scattered across your scripts.  Keep
-## side‑effects minimal: attaching packages in functions avoids
-## polluting the global environment when the file is sourced.
-
-lib <- function() {
+#' Attach core packages quietly for interactive work
+#' @keywords internal
+attach_core <- function() {
   op <- options(stringsAsFactors = FALSE)
   on.exit(options(op), add = TRUE)
   suppressPackageStartupMessages({
-    library(targets); library(tarchetypes); library(dplyr); library(readr)
-    library(purrr); library(tidyr); library(sf); library(terra)
-    library(arrow); library(duckdb); library(config); library(qs)
-    library(lgr); library(progressr)
+    for (pkg in core_packages()) require(pkg, character.only = TRUE)
   })
   invisible(TRUE)
 }
