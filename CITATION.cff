@@ -1,0 +1,7 @@
+cff-version: 1.2.0
+title: "R Repo Gold-Standard Research Compendium"
+authors:
+  - family-names: Brook
+    given-names: Barry
+message: "If you use this compendium, please cite as below."
+version: 0.0.0.9000
